@@ -22791,10 +22791,6 @@ const fragment = function(...children) {
 
 // Tabulate the lcov data in a HTML table.
 function tabulate(lcov, options) {
-	if (options.hideTable) {
-		return ""
-	}
-
 	const head = tr(
 		th("File"),
 		th("Branches"),
@@ -22886,12 +22882,18 @@ function uncovered(file, options) {
 }
 
 function comment (lcov, options) {
-	return fragment(
+	const message = [
 		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
 		table(tbody(tr(th(percentage(lcov).toFixed(2), "%")))),
-		"\n\n",
-		details(summary("Coverage Report"), tabulate(lcov, options)),
-	)
+	];
+
+	if (!options.hideTable) {
+		message.push(
+			"\n\n",
+			details(summary("Coverage Report"), tabulate(lcov, options))
+		);
+	}
+	return fragment(...message)
 }
 
 function diff(lcov, before, options) {
@@ -22910,15 +22912,26 @@ function diff(lcov, before, options) {
 				? "▾"
 				: "▴";
 
-	return fragment(
+				if (!options.hideTable) {
+					message.push(
+						"\n\n",
+						details(summary("Coverage Report"), tabulate(lcov, options))
+					);
+				}
+	const message = [
 		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
 		table(tbody(tr(
 			th(pafter.toFixed(2), "%"),
 			th(arrow, " ", plus, pdiff.toFixed(2), "%"),
 		))),
-		"\n\n",
-		details(summary("Coverage Report"), tabulate(lcov, options)),
-	)
+	];
+	if (!options.hideTable) {
+		message.push(
+			"\n\n",
+			details(summary("Coverage Report"), tabulate(lcov, options))
+		);
+	}
+	return fragment(...message)
 }
 
 const GH_MAX_CHAR = 65536;
@@ -22927,7 +22940,7 @@ async function main$1() {
 	const token = core$1.getInput("github-token");
 	const lcovFile = core$1.getInput("lcov-file") || "./coverage/lcov.info";
 	const baseFile = core$1.getInput("lcov-base");
-	const hideTable = !!core$1.getInput("hide-table");
+	const hideTable = core$1.getInput("hide-table") === "true";
 
 	const raw = await fs.promises.readFile(lcovFile, "utf-8").catch(err => null);
 	if (!raw) {
@@ -22948,8 +22961,6 @@ async function main$1() {
 		base: github_1.payload.pull_request.base.ref,
 		hideTable
 	};
-
-	console.log(`hideTable: ${hideTable}, input: ${core$1.getInput("hide-table")} ${typeof core$1.getInput("hide-table")}`);
 
 	const lcov = await parse$2(raw);
 	const baselcov = baseRaw && await parse$2(baseRaw);

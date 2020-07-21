@@ -22791,6 +22791,10 @@ const fragment = function(...children) {
 
 // Tabulate the lcov data in a HTML table.
 function tabulate(lcov, options) {
+	if (options.hideTable) {
+		return ""
+	}
+
 	const head = tr(
 		th("File"),
 		th("Branches"),
@@ -22917,10 +22921,13 @@ function diff(lcov, before, options) {
 	)
 }
 
+const GH_MAX_CHAR = 65536;
+
 async function main$1() {
 	const token = core$1.getInput("github-token");
 	const lcovFile = core$1.getInput("lcov-file") || "./coverage/lcov.info";
 	const baseFile = core$1.getInput("lcov-base");
+	const hideTable = !!core$1.getInput("hide-table");
 
 	const raw = await fs.promises.readFile(lcovFile, "utf-8").catch(err => null);
 	if (!raw) {
@@ -22939,17 +22946,19 @@ async function main$1() {
 		prefix: `${process.env.GITHUB_WORKSPACE}/`,
 		head: github_1.payload.pull_request.head.ref,
 		base: github_1.payload.pull_request.base.ref,
+		hideTable
 	};
+
+	console.log(`hideTable: ${hideTable}, input: ${core$1.getInput("hide-table")} ${typeof core$1.getInput("hide-table")}`);
 
 	const lcov = await parse$2(raw);
 	const baselcov = baseRaw && await parse$2(baseRaw);
-	const body = diff(lcov, baselcov, options);
 
 	await new github_2(token).issues.createComment({
 		repo: github_1.repo.repo,
 		owner: github_1.repo.owner,
 		issue_number: github_1.payload.pull_request.number,
-		body: diff(lcov, baselcov, options),
+		body: diff(lcov, baselcov, options).slice(0, GH_MAX_CHAR),
 	});
 }
 

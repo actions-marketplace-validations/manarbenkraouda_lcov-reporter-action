@@ -16,26 +16,43 @@ Total Coverage: <b>99.39%</b>
 ## Inputs
 
 ##### `github-token` (**Required**)
+
 Github token used for posting the comment. To use the key provided by the GitHub
 action runner, use `${{ secrets.GITHUB_TOKEN }}`.
 
 ##### `lcov-file` (**Optional**)
+
 The location of the lcov file to read the coverage report from. Defaults to
 `./coverage/lcov.info`.
 
 ##### `lcov-base` (**Optional**)
+
 The location of the lcov file resulting from running the tests in the base
 branch. When this is set a diff of the coverage percentages is shown.
+
+##### `hide-table` (**Optional**)
+
+Wether to show the coverage table or not. If `"true"` is passed, only the percentage diff will be shown
 
 ## Example usage
 
 ```yml
-uses: romeovs/lcov-reporter-action@v0.2.16
+uses: beldar/lcov-reporter-action@v0.3
 with:
   github-token: ${{ secrets.GITHUB_TOKEN }}
   lcov-file: ./coverage/lcov.info
 ```
 
+Without coverage table
+
+```yml
+uses: beldar/lcov-reporter-action@v0.3
+with:
+  github-token: ${{ secrets.GITHUB_TOKEN }}
+  lcov-file: ./coverage/lcov.info
+  hide-table: true
+```
+
 ## Acknowledgements
 
-The initial code is based on [ziishaned/jest-reporter-action](https://github.com/ziishaned/jest-reporter-action).
+The initial code is based on [romeovs/lcov-reporter-action](https://github.com/romeovs/lcov-reporter-action).

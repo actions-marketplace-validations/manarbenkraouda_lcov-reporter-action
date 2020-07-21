@@ -1,6 +1,6 @@
 name: Code Coverage Report
 description: Comments a pull request with the code coverage
-author: Romeo Van Snick
+author: Marti Planellas
 branding:
   icon: check-square
   color: green
@@ -13,6 +13,9 @@ inputs:
     required: false
   lcov-base:
     description: The location of the lcov file for the base branch
+    required: false
+  hide-table:
+    description: Whether to hide the coverage table or not (defaults to false)
     required: false
 runs:
   using: node12

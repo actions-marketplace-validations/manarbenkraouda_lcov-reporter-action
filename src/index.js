@@ -9,7 +9,7 @@ async function main() {
 	const token = core.getInput("github-token")
 	const lcovFile = core.getInput("lcov-file") || "./coverage/lcov.info"
 	const baseFile = core.getInput("lcov-base")
-	const hideTable = (core.getInput("hide-table") === "true" || core.getInput("hide-table") === true)  || false
+	const hideTable = !!core.getInput("hide-table")
 
 	const raw = await fs.readFile(lcovFile, "utf-8").catch(err => null)
 	if (!raw) {
@@ -31,9 +31,10 @@ async function main() {
 		hideTable
 	}
 
+	console.log(`hideTable: ${hideTable}, input: ${core.getInput("hide-table")} ${typeof core.getInput("hide-table")}`)
+
 	const lcov = await parse(raw)
 	const baselcov = baseRaw && await parse(baseRaw)
-	const body = diff(lcov, baselcov, options)
 
 	await new GitHub(token).issues.createComment({
 		repo: context.repo.repo,

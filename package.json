@@ -1,6 +1,6 @@
 {
 	"name": "lcov-reporter-action",
-	"version": "0.3",
+	"version": "0.3.1",
 	"description": "Comments a pull request with the lcov code coverage",
 	"license": "MIT",
 	"author": "Marti Planellas",

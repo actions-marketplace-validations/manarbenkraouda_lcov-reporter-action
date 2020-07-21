@@ -5,6 +5,8 @@ import { GitHub, context } from "@actions/github"
 import { parse } from "./lcov"
 import { diff } from "./comment"
 
+const GH_MAX_CHAR = 65536
+
 async function main() {
 	const token = core.getInput("github-token")
 	const lcovFile = core.getInput("lcov-file") || "./coverage/lcov.info"
@@ -40,7 +42,7 @@ async function main() {
 		repo: context.repo.repo,
 		owner: context.repo.owner,
 		issue_number: context.payload.pull_request.number,
-		body: diff(lcov, baselcov, options),
+		body: diff(lcov, baselcov, options).slice(0, GH_MAX_CHAR),
 	})
 }
 

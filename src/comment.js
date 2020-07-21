@@ -8,7 +8,7 @@ export function comment (lcov, options) {
 		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
 		table(tbody(tr(th(percentage(lcov).toFixed(2), "%")))),
 		"\n\n",
-		details(summary("Coverage Report"), options.hideTable ? null : tabulate(lcov, options)),
+		details(summary("Coverage Report"), tabulate(lcov, options)),
 	)
 }
 
@@ -35,6 +35,6 @@ export function diff(lcov, before, options) {
 			th(arrow, " ", plus, pdiff.toFixed(2), "%"),
 		))),
 		"\n\n",
-		details(summary("Coverage Report"), options.hideTable ? null : tabulate(lcov, options)),
+		details(summary("Coverage Report"), tabulate(lcov, options)),
 	)
 }

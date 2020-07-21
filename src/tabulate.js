@@ -2,6 +2,10 @@ import { th, tr, td, table, tbody, a, b, span, fragment } from "./html"
 
 // Tabulate the lcov data in a HTML table.
 export function tabulate(lcov, options) {
+	if (options.hideTable) {
+		return ""
+	}
+
 	const head = tr(
 		th("File"),
 		th("Branches"),

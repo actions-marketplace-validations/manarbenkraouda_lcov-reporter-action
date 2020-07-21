@@ -11,7 +11,7 @@ async function main() {
 	const token = core.getInput("github-token")
 	const lcovFile = core.getInput("lcov-file") || "./coverage/lcov.info"
 	const baseFile = core.getInput("lcov-base")
-	const hideTable = !!core.getInput("hide-table")
+	const hideTable = core.getInput("hide-table") === "true"
 
 	const raw = await fs.readFile(lcovFile, "utf-8").catch(err => null)
 	if (!raw) {
@@ -32,8 +32,6 @@ async function main() {
 		base: context.payload.pull_request.base.ref,
 		hideTable
 	}
-
-	console.log(`hideTable: ${hideTable}, input: ${core.getInput("hide-table")} ${typeof core.getInput("hide-table")}`)
 
 	const lcov = await parse(raw)
 	const baselcov = baseRaw && await parse(baseRaw)

@@ -4,12 +4,18 @@ import { percentage } from "./lcov"
 import { tabulate } from "./tabulate"
 
 export function comment (lcov, options) {
-	return fragment(
+	const message = [
 		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
 		table(tbody(tr(th(percentage(lcov).toFixed(2), "%")))),
-		"\n\n",
-		details(summary("Coverage Report"), tabulate(lcov, options)),
-	)
+	]
+
+	if (!options.hideTable) {
+		message.push(
+			"\n\n",
+			details(summary("Coverage Report"), tabulate(lcov, options))
+		)
+	}
+	return fragment(...message)
 }
 
 export function diff(lcov, before, options) {
@@ -28,13 +34,24 @@ export function diff(lcov, before, options) {
 				? "▾"
 				: "▴"
 
-	return fragment(
+				if (!options.hideTable) {
+					message.push(
+						"\n\n",
+						details(summary("Coverage Report"), tabulate(lcov, options))
+					)
+				}
+	const message = [
 		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
 		table(tbody(tr(
 			th(pafter.toFixed(2), "%"),
 			th(arrow, " ", plus, pdiff.toFixed(2), "%"),
 		))),
-		"\n\n",
-		details(summary("Coverage Report"), tabulate(lcov, options)),
-	)
+	]
+	if (!options.hideTable) {
+		message.push(
+			"\n\n",
+			details(summary("Coverage Report"), tabulate(lcov, options))
+		)
+	}
+	return fragment(...message)
 }

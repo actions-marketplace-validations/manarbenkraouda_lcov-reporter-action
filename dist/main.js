@@ -22912,12 +22912,6 @@ function diff(lcov, before, options) {
 				? "▾"
 				: "▴";
 
-				if (!options.hideTable) {
-					message.push(
-						"\n\n",
-						details(summary("Coverage Report"), tabulate(lcov, options))
-					);
-				}
 	const message = [
 		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
 		table(tbody(tr(

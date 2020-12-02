@@ -4,18 +4,18 @@ import { percentage } from "./lcov"
 import { tabulate } from "./tabulate"
 
 export function comment(lcov, options) {
-	return fragment(
+	var message = [
 		options.base
 			? `Coverage after merging ${b(options.head)} into ${b(options.base)}`
 			: `Coverage for this commit`,
 		table(tbody(tr(th(percentage(lcov).toFixed(2), "%")))),
-	]
+	];
 
 	if (!options.hideTable) {
 		message.push(
 			"\n\n",
 			details(summary("Coverage Report"), tabulate(lcov, options))
-		)
+		);
 	}
 	return fragment(...message)
 }
@@ -36,20 +36,17 @@ export function diff(lcov, before, options) {
 				? "▾"
 				: "▴"
 
-	return fragment(
+	message = [
 		options.base
 			? `Coverage after merging ${b(options.head)} into ${b(options.base)}`
 			: `Coverage for this commit`,
-		table(tbody(tr(
-			th(pafter.toFixed(2), "%"),
-			th(arrow, " ", plus, pdiff.toFixed(2), "%"),
-		))),
-	]
+		table(tbody(tr(th(pafter.toFixed(2), "%"), th(arrow, " ", plus, pdiff.toFixed(2), "%"))))
+	];
 	if (!options.hideTable) {
 		message.push(
 			"\n\n",
 			details(summary("Coverage Report"), tabulate(lcov, options))
 		)
 	}
-	return fragment(...message)
+	return fragment(...message);
 }

@@ -1,7 +1,7 @@
-<h1 align="center">ambimax/action-report-coverage</h1>
+<h1 align="center">manarbenkraouda/action-report-coverage</h1>
 
 <p align="center">
-  GitHub Action to add a coverage report to commits or pull requests.
+  GitHub Action to add a coverage report to commits or pull requests. The report will be partial by default
 </p>
 
 <br>
@@ -45,20 +45,10 @@ Wether to show the coverage table or not. If `"true"` is passed, only the percen
 ## Example usage
 
 ```yml
-uses: beldar/lcov-reporter-action@v0.3
+uses: manar.benkraoda/lcov-reporter-action@v0.3.5.3
 with:
   github-token: ${{ secrets.GITHUB_TOKEN }}
   lcov-file: ./coverage/lcov.info
-```
-
-Without coverage table
-
-```yml
-uses: beldar/lcov-reporter-action@v0.3
-with:
-  github-token: ${{ secrets.GITHUB_TOKEN }}
-  lcov-file: ./coverage/lcov.info
-  hide-table: true
 ```
 
 ## Acknowledgements

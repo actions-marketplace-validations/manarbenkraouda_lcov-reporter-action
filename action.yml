@@ -1,5 +1,5 @@
-name: Code Coverage Report
-description: Comments a pull request with the code coverage
+name: Partial LCOV Code Coverage Report
+description: Comments a pull request or a push with the global code coverage
 author: Marti Planellas
 branding:
   icon: check-square

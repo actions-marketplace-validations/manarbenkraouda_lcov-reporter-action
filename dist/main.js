@@ -22882,8 +22882,10 @@ function uncovered(file, options) {
 }
 
 function comment (lcov, options) {
-	const message = [
-		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
+	return fragment(
+		options.base
+			? `Coverage after merging ${b(options.head)} into ${b(options.base)}`
+			: `Coverage for this commit`,
 		table(tbody(tr(th(percentage(lcov).toFixed(2), "%")))),
 	];
 
@@ -22912,8 +22914,10 @@ function diff(lcov, before, options) {
 				? "▾"
 				: "▴";
 
-	const message = [
-		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
+	return fragment(
+		options.base
+			? `Coverage after merging ${b(options.head)} into ${b(options.base)}`
+			: `Coverage for this commit`,
 		table(tbody(tr(
 			th(pafter.toFixed(2), "%"),
 			th(arrow, " ", plus, pdiff.toFixed(2), "%"),
@@ -22949,22 +22953,39 @@ async function main$1() {
 
 	const options = {
 		repository: github_1.payload.repository.full_name,
-		commit: github_1.payload.pull_request.head.sha,
 		prefix: `${process.env.GITHUB_WORKSPACE}/`,
 		head: github_1.payload.pull_request.head.ref,
 		base: github_1.payload.pull_request.base.ref,
 		hideTable
 	};
 
+	if (github_1.eventName === "pull_request") {
+		options.commit = github_1.payload.pull_request.head.sha;
+		options.head = github_1.payload.pull_request.head.ref;
+		options.base = github_1.payload.pull_request.base.ref;
+	} else if (github_1.eventName === "push") {
+		options.commit = github_1.payload.after;
+		options.head = github_1.ref;
+	}
+
 	const lcov = await parse$2(raw);
 	const baselcov = baseRaw && await parse$2(baseRaw);
 
-	await new github_2(token).issues.createComment({
-		repo: github_1.repo.repo,
-		owner: github_1.repo.owner,
-		issue_number: github_1.payload.pull_request.number,
-		body: diff(lcov, baselcov, options).slice(0, GH_MAX_CHAR),
-	});
+	if (github_1.eventName === "pull_request") {
+		await new github_2(token).issues.createComment({
+			repo: github_1.repo.repo,
+			owner: github_1.repo.owner,
+			issue_number: github_1.payload.pull_request.number,
+			body: diff(lcov, baselcov, options).slice(0, GH_MAX_CHAR),
+		});
+	} else if (github_1.eventName === "push") {
+		await new github_2(token).repos.createCommitComment({
+			repo: github_1.repo.repo,
+			owner: github_1.repo.owner,
+			commit_sha: options.commit,
+			body: diff(lcov, baselcov, options).slice(0, GH_MAX_CHAR),
+		});
+	}
 }
 
 main$1().catch(function(err) {

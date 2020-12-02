@@ -26,25 +26,41 @@ async function main() {
 
 	const options = {
 		repository: context.payload.repository.full_name,
-		commit: context.payload.pull_request.head.sha,
 		prefix: `${process.env.GITHUB_WORKSPACE}/`,
-		head: context.payload.pull_request.head.ref,
-		base: context.payload.pull_request.base.ref,
+	}
+
+	if (context.eventName === "pull_request") {
+		options.commit = context.payload.pull_request.head.sha
+		options.head = context.payload.pull_request.head.ref
+		options.base = context.payload.pull_request.base.ref
+		hideTable
+	} else if (context.eventName === "push") {
+		options.commit = context.payload.after
+		options.head = context.ref
 		hideTable
 	}
 
 	const lcov = await parse(raw)
 	const baselcov = baseRaw && await parse(baseRaw)
 
-	await new GitHub(token).issues.createComment({
-		repo: context.repo.repo,
-		owner: context.repo.owner,
-		issue_number: context.payload.pull_request.number,
-		body: diff(lcov, baselcov, options).slice(0, GH_MAX_CHAR),
-	})
+	if (context.eventName === "pull_request") {
+		await new GitHub(token).issues.createComment({
+			repo: context.repo.repo,
+			owner: context.repo.owner,
+			issue_number: context.payload.pull_request.number,
+			body: diff(lcov, baselcov, options).slice(0, GH_MAX_CHAR),
+		})
+	} else if (context.eventName === "push") {
+		await new GitHub(token).repos.createCommitComment({
+			repo: context.repo.repo,
+			owner: context.repo.owner,
+			commit_sha: options.commit,
+			body: diff(lcov, baselcov, options).slice(0, GH_MAX_CHAR),
+		})
+	}
 }
 
-main().catch(function(err) {
+main().catch(function (err) {
 	console.log(err)
 	core.setFailed(err.message)
 })

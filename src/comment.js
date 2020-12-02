@@ -3,9 +3,11 @@ import { details, summary, b, fragment, table, tbody, tr, th } from "./html"
 import { percentage } from "./lcov"
 import { tabulate } from "./tabulate"
 
-export function comment (lcov, options) {
-	const message = [
-		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
+export function comment(lcov, options) {
+	return fragment(
+		options.base
+			? `Coverage after merging ${b(options.head)} into ${b(options.base)}`
+			: `Coverage for this commit`,
 		table(tbody(tr(th(percentage(lcov).toFixed(2), "%")))),
 	]
 
@@ -34,8 +36,10 @@ export function diff(lcov, before, options) {
 				? "▾"
 				: "▴"
 
-	const message = [
-		`Coverage after merging ${b(options.head)} into ${b(options.base)}`,
+	return fragment(
+		options.base
+			? `Coverage after merging ${b(options.head)} into ${b(options.base)}`
+			: `Coverage for this commit`,
 		table(tbody(tr(
 			th(pafter.toFixed(2), "%"),
 			th(arrow, " ", plus, pdiff.toFixed(2), "%"),

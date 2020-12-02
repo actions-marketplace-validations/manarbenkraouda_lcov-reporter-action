@@ -27,17 +27,16 @@ async function main() {
 	const options = {
 		repository: context.payload.repository.full_name,
 		prefix: `${process.env.GITHUB_WORKSPACE}/`,
-	}
+		hideTable: true
+	};
 
 	if (context.eventName === "pull_request") {
-		options.commit = context.payload.pull_request.head.sha
-		options.head = context.payload.pull_request.head.ref
-		options.base = context.payload.pull_request.base.ref
-		hideTable
+		options.commit = context.payload.pull_request.head.sha;
+		options.head = context.payload.pull_request.head.ref;
+		options.base = context.payload.pull_request.base.ref;
 	} else if (context.eventName === "push") {
-		options.commit = context.payload.after
-		options.head = context.ref
-		hideTable
+		options.commit = context.payload.after;
+		options.head = context.ref;
 	}
 
 	const lcov = await parse(raw)

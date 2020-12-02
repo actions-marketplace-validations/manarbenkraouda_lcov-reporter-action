@@ -22954,9 +22954,7 @@ async function main$1() {
 	const options = {
 		repository: github_1.payload.repository.full_name,
 		prefix: `${process.env.GITHUB_WORKSPACE}/`,
-		head: github_1.payload.pull_request.head.ref,
-		base: github_1.payload.pull_request.base.ref,
-		hideTable
+		hideTable : true
 	};
 
 	if (github_1.eventName === "pull_request") {

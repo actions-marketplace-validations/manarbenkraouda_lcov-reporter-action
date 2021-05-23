@@ -45,7 +45,7 @@ Wether to show the coverage table or not. If `"true"` is passed, only the percen
 ## Example usage
 
 ```yml
-uses: manar.benkraoda/lcov-reporter-action@v0.3.5.3
+uses: manarbenkraouda/lcov-reporter-action@v0.3.5.3
 with:
   github-token: ${{ secrets.GITHUB_TOKEN }}
   lcov-file: ./coverage/lcov.info

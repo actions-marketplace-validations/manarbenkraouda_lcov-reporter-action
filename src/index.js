@@ -47,9 +47,9 @@ async function main() {
 	if (context.eventName === "pull_request") {
 		var output = diff(lcov, baselcov, options);
 		const artifactClient = artifact.create();
-		const artifactName = `code-coverage-report-${context.ref}-${context.sha}`;
-		fs.writeFileSync(`./coverage/lcov-${context.ref}-${context.sha}.info.html`, output);
-		const files = [`./coverage/lcov-${context.ref}-${context.sha}.info.html`];
+		const artifactName = `code-coverage-report-${context.sha}`;
+		fs.writeFileSync(`./coverage/lcov-${context.sha}.info.html`, output);
+		const files = [`./coverage/lcov-${context.sha}.info.html`];
 		const rootDirectory = '.';
 		const options = {
     	continueOnError: false
@@ -64,9 +64,9 @@ async function main() {
 	} else if (context.eventName === "push") {
 		var output = diff(lcov, baselcov, options);
 		const artifactClient = artifact.create();
-		const artifactName = `code-coverage-report-${context.ref}-${context.sha}`;
-		fs.writeFileSync(`./coverage/lcov-${context.ref}-${context.sha}.info.html`, output);
-		const files = [`./coverage/lcov-${context.ref}-${context.sha}.info.html`];
+		const artifactName = `code-coverage-report-${context.sha}`;
+		fs.writeFileSync(`./coverage/lcov-${context.sha}.info.html`, output);
+		const files = [`./coverage/lcov-${context.sha}.info.html`];
 		const rootDirectory = '.';
 		const options = {
     	continueOnError: false

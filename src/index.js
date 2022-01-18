@@ -2,6 +2,7 @@ import { promises as fs } from "fs"
 import core from "@actions/core"
 import artifact from '@actions/artifact'
 import { GitHub, context } from "@actions/github"
+import { basename, dirname } from 'path'
 
 import { parse } from "./lcov"
 import { diff } from "./comment"
@@ -14,6 +15,7 @@ async function main() {
 	const lcovFile = core.getInput("lcov-file") || "./coverage/lcov.info"
 	const baseFile = core.getInput("lcov-base")
 	const hideTable = core.getInput("hide-table") === "true"
+	const outputFile = core.getInput("output-file") || `./coverage/lcov-${context.sha}.info.html`
 
 	const raw = await fs.readFile(lcovFile, "utf-8").catch(err => null)
 	if (!raw) {
@@ -47,10 +49,10 @@ async function main() {
 	if (context.eventName === "pull_request") {
 		var output = diff(lcov, baselcov, options);
 		const artifactClient = artifact.create();
-		const artifactName = `code-coverage-report-${context.sha}`;
-		fs.writeFileSync(`./coverage/lcov-${context.sha}.info.html`, output);
-		const files = [`./coverage/lcov-${context.sha}.info.html`];
-		const rootDirectory = '.';
+		const artifactName = basename(outputFile);
+		fs.writeFileSync(outputFile, output);
+		const files = [outputFile];
+		const rootDirectory = dirname(outputFile);
 		const options = {
     	continueOnError: false
 		};
@@ -64,10 +66,10 @@ async function main() {
 	} else if (context.eventName === "push") {
 		var output = diff(lcov, baselcov, options);
 		const artifactClient = artifact.create();
-		const artifactName = `code-coverage-report-${context.sha}`;
-		fs.writeFileSync(`./coverage/lcov-${context.sha}.info.html`, output);
-		const files = [`./coverage/lcov-${context.sha}.info.html`];
-		const rootDirectory = '.';
+		const artifactName = basename(outputFile);
+		fs.writeFileSync(outputFile, output);
+		const files = [outputFile];
+		const rootDirectory = dirname(outputFile);
 		const options = {
     	continueOnError: false
 		};

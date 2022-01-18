@@ -1,9 +1,11 @@
 import { promises as fs } from "fs"
 import core from "@actions/core"
+import artifact from '@actions/artifact'
 import { GitHub, context } from "@actions/github"
 
 import { parse } from "./lcov"
 import { diff } from "./comment"
+import { writeFileSync }
 
 const GH_MAX_CHAR = 65536
 
@@ -43,18 +45,38 @@ async function main() {
 	const baselcov = baseRaw && await parse(baseRaw)
 
 	if (context.eventName === "pull_request") {
+		var output = diff(lcov, baselcov, options);
+		const artifactClient = artifact.create();
+		const artifactName = `code-coverage-report-${context.ref}-${context.sha}`;
+		fs.writeFileSync(`./coverage/lcov-${context.ref}-${context.sha}.info.html`, output);
+		const files = [`./coverage/lcov-${context.ref}-${context.sha}.info.html`];
+		const rootDirectory = '.';
+		const options = {
+    	continueOnError: false
+		};
+		const uploadResponse = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
 		await new GitHub(token).issues.createComment({
 			repo: context.repo.repo,
 			owner: context.repo.owner,
 			issue_number: context.payload.pull_request.number,
-			body: diff(lcov, baselcov, options).slice(0, GH_MAX_CHAR),
+			body: output.slice(0, GH_MAX_CHAR),
 		})
 	} else if (context.eventName === "push") {
+		var output = diff(lcov, baselcov, options);
+		const artifactClient = artifact.create();
+		const artifactName = `code-coverage-report-${context.ref}-${context.sha}`;
+		fs.writeFileSync(`./coverage/lcov-${context.ref}-${context.sha}.info.html`, output);
+		const files = [`./coverage/lcov-${context.ref}-${context.sha}.info.html`];
+		const rootDirectory = '.';
+		const options = {
+    	continueOnError: false
+		};
+		const uploadResponse = await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
 		await new GitHub(token).repos.createCommitComment({
 			repo: context.repo.repo,
 			owner: context.repo.owner,
 			commit_sha: options.commit,
-			body: diff(lcov, baselcov, options).slice(0, GH_MAX_CHAR),
+			body: output.slice(0, GH_MAX_CHAR),
 		})
 	}
 }

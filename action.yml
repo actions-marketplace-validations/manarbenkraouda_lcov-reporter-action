@@ -17,6 +17,8 @@ inputs:
   hide-table:
     description: Whether to hide the coverage table or not (defaults to false)
     required: false
+   output-file:
+    required: false
 runs:
   using: node12
   main: dist/main.js

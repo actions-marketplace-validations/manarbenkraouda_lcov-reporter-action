@@ -50,8 +50,9 @@ async function main() {
 		var output = diff(lcov, baselcov, options);
 		const artifactClient = artifact.create();
 		const artifactName = basename(outputFile);
-		writeFileSync(outputFile, output);
+		console.log(writeFileSync(outputFile, output));
 		core.setOutput("coverage", output);
+		console.log("Set output coverage: " + output);
 		const files = [outputFile];
 		const rootDirectory = dirname(outputFile);
 		const options = {
@@ -68,8 +69,9 @@ async function main() {
 		var output = diff(lcov, baselcov, options);
 		const artifactClient = artifact.create();
 		const artifactName = basename(outputFile);
-		writeFileSync(outputFile, output);
+		console.log(writeFileSync(outputFile, output));
 		core.setOutput("coverage", output);
+		console.log("Set output coverage: " + output);
 		const files = [outputFile];
 		const rootDirectory = dirname(outputFile);
 		const options = {

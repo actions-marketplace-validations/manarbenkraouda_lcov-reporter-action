@@ -6,7 +6,7 @@ import { basename, dirname } from 'path'
 
 import { parse } from "./lcov"
 import { diff } from "./comment"
-import { writeFileSync }
+import { writeFileSync } from 'fs'
 
 const GH_MAX_CHAR = 65536
 
@@ -50,7 +50,7 @@ async function main() {
 		var output = diff(lcov, baselcov, options);
 		const artifactClient = artifact.create();
 		const artifactName = basename(outputFile);
-		fs.writeFileSync(outputFile, output);
+		writeFileSync(outputFile, output);
 		const files = [outputFile];
 		const rootDirectory = dirname(outputFile);
 		const options = {
@@ -67,7 +67,7 @@ async function main() {
 		var output = diff(lcov, baselcov, options);
 		const artifactClient = artifact.create();
 		const artifactName = basename(outputFile);
-		fs.writeFileSync(outputFile, output);
+		writeFileSync(outputFile, output);
 		const files = [outputFile];
 		const rootDirectory = dirname(outputFile);
 		const options = {

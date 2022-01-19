@@ -51,6 +51,7 @@ async function main() {
 		const artifactClient = artifact.create();
 		const artifactName = basename(outputFile);
 		writeFileSync(outputFile, output);
+		core.setOutput("coverage", output);
 		const files = [outputFile];
 		const rootDirectory = dirname(outputFile);
 		const options = {
@@ -68,6 +69,7 @@ async function main() {
 		const artifactClient = artifact.create();
 		const artifactName = basename(outputFile);
 		writeFileSync(outputFile, output);
+		core.setOutput("coverage", output);
 		const files = [outputFile];
 		const rootDirectory = dirname(outputFile);
 		const options = {
